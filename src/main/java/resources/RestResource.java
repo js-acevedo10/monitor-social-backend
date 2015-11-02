@@ -20,7 +20,10 @@ public class RestResource {
 		ArrayList<Status> twitList = TwitterStreamer.getLastTweets();
 		String respuesta = "";
 		for(Status stauts : twitList) {
-			respuesta += "<h1>" + TwitterJSONParser.parseTwitt(stauts) + "</h1>";
+			respuesta += TwitterJSONParser.parseTwitt(stauts);
+		}
+		if(respuesta.equalsIgnoreCase("")) {
+			respuesta = "0 tweets.";
 		}
 		return respuesta;
 	}
