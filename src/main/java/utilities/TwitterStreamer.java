@@ -40,12 +40,8 @@ public class TwitterStreamer {
 			public void onStatus(Status status) {
 				boolean g = false;
 				if(saveSome) {
-					if(status.getText().contains("nice") || status.getText().contains("good") || status.getText().contains("cool") || status.getText().contains("best") || status.getText().contains("ad")) {
-						saved.add(0, status);;
-						g = true;
-					}
+					saved.add(0, status);
 				}
-				System.out.println("@"+status.getUser().getScreenName() + ": " + status.getText() + " guardado: " + g);
 			}
 			public void onStallWarning(StallWarning stallWarning) {}
 			public void onScrubGeo(long arg0, long arg1) {}
