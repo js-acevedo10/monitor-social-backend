@@ -22,6 +22,8 @@ public class TwitterStreamer {
 	private double[][] locations;
 	private boolean saveSome;
 	public static ArrayList<Status> saved;
+	public static Status lastStatus;
+	public static int statusCounter;
 	
 	public TwitterStreamer(String[] keywords, String[] languages, double[][] locations, boolean saveSome) {
 		this.keywords = keywords;
@@ -29,6 +31,7 @@ public class TwitterStreamer {
 		this.locations = locations;
 		this.saveSome = saveSome;
 		saved = new ArrayList<Status>();
+		statusCounter = 0;
 	}
 	
 	public void startStreaming() {
@@ -38,9 +41,9 @@ public class TwitterStreamer {
 			}
 			public void onTrackLimitationNotice(int limitNotice) {}
 			public void onStatus(Status status) {
-				boolean g = false;
 				if(saveSome) {
-					saved.add(0, status);
+					statusCounter++;
+					lastStatus = status;
 				}
 			}
 			public void onStallWarning(StallWarning stallWarning) {}
@@ -86,5 +89,13 @@ public class TwitterStreamer {
 	public static ArrayList<Status> getLastTweets() {
 		System.out.println(saved.size());
 		return saved;
+	}
+	
+	public static Status getLastTweet() {
+		return lastStatus;
+	}
+	
+	public static int getCount() {
+		return statusCounter;
 	}
 }

@@ -17,14 +17,19 @@ public class RestResource {
 	@GET
 	@Produces(MediaType.TEXT_HTML)
 	public String getTwitterMessages() {
-		ArrayList<Status> twitList = TwitterStreamer.getLastTweets();
-		String respuesta = "";
-		for(Status stauts : twitList) {
-			respuesta += TwitterJSONParser.parseTwitt(stauts);
-		}
-		if(respuesta.equalsIgnoreCase("")) {
-			respuesta = "0 tweets.";
-		}
+//		ArrayList<Status> twitList = TwitterStreamer.getLastTweets();
+//		String respuesta = "";
+//		for(Status stauts : twitList) {
+//			respuesta += TwitterJSONParser.parseTwitt(stauts);
+//		}
+//		if(respuesta.equalsIgnoreCase("")) {
+//			respuesta = "0 tweets.";
+//		}
+//		return respuesta;
+		
+		Status lastStatus = TwitterStreamer.getLastTweet();
+		int counter = TwitterStreamer.getCount();
+		String respuesta = "<h1>N&uacute;mero de Tweets Procesados:" + counter + "</h1><h1>&Uacute;ltimo Tweet Procesado: " + "</h1>" + TwitterJSONParser.parseTwitt(lastStatus);
 		return respuesta;
 	}
 }
