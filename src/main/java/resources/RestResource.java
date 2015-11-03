@@ -26,12 +26,9 @@ public class RestResource {
 //			respuesta = "0 tweets.";
 //		}
 //		return respuesta;
-		String respuesta = "A&uacute;n no se han procesado Tweets";
-		int counter = TwitterStreamer.getCount();
-		if(counter > 0) {
-			Status lastStatus = TwitterStreamer.getLastTweet();
-			respuesta = "<h1>N&uacute;mero de Tweets Procesados:" + counter + "</h1><h1>&Uacute;ltimo Tweet Procesado: " + "</h1>" + TwitterJSONParser.parseTwitt(lastStatus);
-		}
+		String respuesta = TwitterStreamer.getLastUserInteraction();
+		
+		respuesta = "<h1>Esto es lo último que ha sucedido en el perfil seleccionado:</h1>" + respuesta;
 		
 		return respuesta;
 	}

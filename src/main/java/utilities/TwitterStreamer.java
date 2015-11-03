@@ -37,6 +37,7 @@ public class TwitterStreamer {
 	public static ArrayList<Status> saved;
 	public static Status lastStatus;
 	public static int statusCounter;
+	public static String lastUserInteraction;
 	
 	public TwitterStreamer(String[] keywords, String[] languages, double[][] locations, boolean saveSome) {
 		this.keywords = keywords;
@@ -45,6 +46,7 @@ public class TwitterStreamer {
 		this.saveSome = saveSome;
 		saved = new ArrayList<Status>();
 		statusCounter = 0;
+		lastUserInteraction = "<h1>No ha ocurrido nada nuevo";
 	}
 	
 	public void startStreaming() throws Exception {
@@ -55,11 +57,14 @@ public class TwitterStreamer {
 		ResultSet rs = statement.executeQuery(query);
 		String accessToken = "";
 		String accessSecret = "";
+		String nombre = "";
 		while(rs.next()) {
 			System.out.println(rs.getString(1));
 			accessToken = rs.getString(3);
 			accessSecret = rs.getString(4);
+			nombre = rs.getString(2);
 		}
+		lastUserInteraction += " en el perfil de " + nombre + "</h1>";
 		
 		statusListener = new StatusListener() {
 			public void onException(Exception e) {
@@ -130,6 +135,7 @@ public class TwitterStreamer {
 			
 			public void onFollow(User source, User followedUser) {
 				System.out.println(source.getScreenName() + " ---- " + followedUser.getName());
+				lastUserInteraction = "<h2>" + source.getName() + "(@" + source.getScreenName() + ")" + " ha comenzado a seguir a " + followedUser.getName() + "(@" + followedUser.getScreenName() + ")" + "</h2>";
 			}
 			
 			public void onFavoritedRetweet(User source, User target,
@@ -183,6 +189,10 @@ public class TwitterStreamer {
 	
 	public static Status getLastTweet() {
 		return lastStatus;
+	}
+	
+	public static String getLastUserInteraction() {
+		return lastUserInteraction;
 	}
 	
 	public static int getCount() {
