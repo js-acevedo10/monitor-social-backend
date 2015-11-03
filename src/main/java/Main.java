@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import utilities.FacebookStreamer;
 import utilities.TwitterStreamer;
 
 import com.sun.grizzly.http.SelectorThread;
@@ -22,9 +23,7 @@ public class Main {
         
         System.out.println("Starting grizzly...");
         SelectorThread threadSelector = GrizzlyWebContainerFactory.create(baseUri, initParams);
-        System.out.println(String.format("Jersey started with WADL available at %sapplication.wadl.",baseUri, baseUri));
-        System.out.println("Presiona ENTER para detener el servidor");
-        
+        System.out.println(String.format("Jersey started with WADL available at %sapplication.wadl.",baseUri, baseUri));        
         startStreaming();
 	}
 	

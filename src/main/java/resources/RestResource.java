@@ -26,10 +26,13 @@ public class RestResource {
 //			respuesta = "0 tweets.";
 //		}
 //		return respuesta;
-		
-		Status lastStatus = TwitterStreamer.getLastTweet();
+		String respuesta = "A&uacute;n no se han procesado Tweets";
 		int counter = TwitterStreamer.getCount();
-		String respuesta = "<h1>N&uacute;mero de Tweets Procesados:" + counter + "</h1><h1>&Uacute;ltimo Tweet Procesado: " + "</h1>" + TwitterJSONParser.parseTwitt(lastStatus);
+		if(counter > 0) {
+			Status lastStatus = TwitterStreamer.getLastTweet();
+			respuesta = "<h1>N&uacute;mero de Tweets Procesados:" + counter + "</h1><h1>&Uacute;ltimo Tweet Procesado: " + "</h1>" + TwitterJSONParser.parseTwitt(lastStatus);
+		}
+		
 		return respuesta;
 	}
 }

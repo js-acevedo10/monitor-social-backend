@@ -1,7 +1,15 @@
 package utilities;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
+import twitter4j.DirectMessage;
 import twitter4j.FilterQuery;
 import twitter4j.StallWarning;
 import twitter4j.Status;
@@ -9,10 +17,15 @@ import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
+import twitter4j.User;
+import twitter4j.UserList;
+import twitter4j.UserStreamListener;
+import twitter4j.auth.AccessToken;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class TwitterStreamer {
 	StatusListener statusListener;
+	UserStreamListener userStreamListener;
 	TwitterStream twitterStream;
 	ConfigurationBuilder cb;
 	FilterQuery fq;
@@ -34,7 +47,13 @@ public class TwitterStreamer {
 		statusCounter = 0;
 	}
 	
-	public void startStreaming() {
+	public void startStreaming() throws Exception {
+		
+		Connection connection = getConnection();
+		Statement statement = connection.createStatement();
+		String query = "create table user(ID int, Name varchar(255), taccesstoken varchar(255), taccesstokensecret varchar(255))";
+		statement.executeQuery(query);
+		
 		statusListener = new StatusListener() {
 			public void onException(Exception e) {
 				e.printStackTrace();
@@ -51,14 +70,77 @@ public class TwitterStreamer {
 			public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {}
 		};
 		
-		cb = new ConfigurationBuilder();
-		cb.setOAuthConsumerSecret("dAg6JZB84XXlKn21VGqxGSofaJtkIaD8c9pUrqCJJbyWSMZ2bD");
-		cb.setOAuthConsumerKey("bGPtpsnIx0eQJuVtXtHncfZUA");
-		cb.setOAuthAccessToken("2334095631-QwupYxwRjThfNx7s4j24Vo28ylS64NFs7LA4Fqh");
-		cb.setOAuthAccessTokenSecret("4XVrQTuvs02XO6WTqhwJz8Pq2P9m4B00JI4X0lVZnafV9");
+		userStreamListener = new UserStreamListener() {
+			
+			public void onException(Exception ex) {}
+			
+			public void onTrackLimitationNotice(int numberOfLimitedStatuses) {}
+			
+			public void onStatus(Status status) {}
+			
+			public void onStallWarning(StallWarning warning) {}
+			
+			public void onScrubGeo(long userId, long upToStatusId) {}
+			
+			public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {}
+			
+			public void onUserSuspension(long suspendedUser) {}
+			
+			public void onUserProfileUpdate(User updatedUser) {}
+			
+			public void onUserListUpdate(User listOwner, UserList list) {}
+			
+			public void onUserListUnsubscription(User subscriber, User listOwner,
+					UserList list) {}
+			
+			public void onUserListSubscription(User subscriber, User listOwner,
+					UserList list) {}
+			
+			public void onUserListMemberDeletion(User deletedMember, User listOwner,
+					UserList list) {}
+			
+			public void onUserListMemberAddition(User addedMember, User listOwner,
+					UserList list) {}
+			
+			public void onUserListDeletion(User listOwner, UserList list) {}
+			
+			public void onUserListCreation(User listOwner, UserList list) {}
+			
+			public void onUserDeletion(long deletedUser) {}
+			
+			public void onUnfollow(User source, User unfollowedUser) {}
+			
+			public void onUnfavorite(User source, User target, Status unfavoritedStatus) {}
+			
+			public void onUnblock(User source, User unblockedUser) {}
+			
+			public void onRetweetedRetweet(User source, User target,
+					Status retweetedStatus) {}
+			
+			public void onQuotedTweet(User source, User target, Status quotingTweet) {}
+			
+			public void onFriendList(long[] friendIds) {}
+			
+			public void onFollow(User source, User followedUser) {
+				System.out.println(source.getScreenName() + " ---- " + followedUser.getName());
+			}
+			
+			public void onFavoritedRetweet(User source, User target,
+					Status favoritedRetweeet) {}
+			
+			public void onFavorite(User source, User target, Status favoritedStatus) {}
+			
+			public void onDirectMessage(DirectMessage directMessage) {}
+			
+			public void onDeletionNotice(long directMessageId, long userId) {}
+			
+			public void onBlock(User source, User blockedUser) {}
+		};
 		
-		twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
-	    twitterStream.addListener(statusListener);
+		twitterStream = new TwitterStreamFactory().getInstance();
+		twitterStream.setOAuthAccessToken(new AccessToken("2334095631-QwupYxwRjThfNx7s4j24Vo28ylS64NFs7LA4Fqh", "4XVrQTuvs02XO6WTqhwJz8Pq2P9m4B00JI4X0lVZnafV9"));
+	    //twitterStream.addListener(statusListener);
+		twitterStream.addListener(userStreamListener);
 	    
 	    fq = new FilterQuery();
 	    if(keywords != null && keywords.length != 0) {
@@ -78,7 +160,7 @@ public class TwitterStreamer {
 	    if(locations != null && languages.length != 0) {
 	    	fq.locations(locations);
 	    }
-	    twitterStream.filter(fq);
+	    twitterStream.user();
 	}
 	
 	public void stopStreaming() {
@@ -97,5 +179,15 @@ public class TwitterStreamer {
 	
 	public static int getCount() {
 		return statusCounter;
+	}
+	
+	private static Connection getConnection() throws URISyntaxException, SQLException {
+	    URI dbUri = new URI(System.getenv("DATABASE_URL"));
+
+	    String username = dbUri.getUserInfo().split(":")[0];
+	    String password = dbUri.getUserInfo().split(":")[1];
+	    String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+
+	    return DriverManager.getConnection(dbUrl, username, password);
 	}
 }
