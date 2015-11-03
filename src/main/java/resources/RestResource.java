@@ -28,7 +28,7 @@ public class RestResource {
 //		return respuesta;
 		String respuesta = TwitterStreamer.getLastUserInteraction();
 		
-		respuesta = "<h1>Esto es lo último que ha sucedido en el perfil seleccionado: (" + TwitterStreamer.getCount() +")</h1>" + respuesta;
+		respuesta = "<h1>Esto es lo &uacute;ltimo que ha sucedido en el perfil seleccionado: (" + TwitterStreamer.getCount() +")</h1>" + respuesta;
 		
 		return respuesta;
 	}
