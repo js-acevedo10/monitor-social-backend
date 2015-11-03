@@ -53,9 +53,12 @@ public class TwitterStreamer {
 		Statement statement = connection.createStatement();
 		String query = "select * from users";
 		ResultSet rs = statement.executeQuery(query);
-		
+		String accessToken = "";
+		String accessSecret = "";
 		while(rs.next()) {
 			System.out.println(rs.getString(1));
+			accessToken = rs.getString(3);
+			accessSecret = rs.getString(4);
 		}
 		
 		statusListener = new StatusListener() {
@@ -142,7 +145,8 @@ public class TwitterStreamer {
 		};
 		
 		twitterStream = new TwitterStreamFactory().getInstance();
-		twitterStream.setOAuthAccessToken(new AccessToken("2334095631-QwupYxwRjThfNx7s4j24Vo28ylS64NFs7LA4Fqh", "4XVrQTuvs02XO6WTqhwJz8Pq2P9m4B00JI4X0lVZnafV9"));
+//		twitterStream.setOAuthAccessToken(new AccessToken("2334095631-QwupYxwRjThfNx7s4j24Vo28ylS64NFs7LA4Fqh", "4XVrQTuvs02XO6WTqhwJz8Pq2P9m4B00JI4X0lVZnafV9"));
+		twitterStream.setOAuthAccessToken(new AccessToken(accessToken, accessSecret));
 	    //twitterStream.addListener(statusListener);
 		twitterStream.addListener(userStreamListener);
 	    
