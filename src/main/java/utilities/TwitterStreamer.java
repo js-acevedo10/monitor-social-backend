@@ -51,7 +51,11 @@ public class TwitterStreamer {
 		
 		Connection connection = getConnection();
 		Statement statement = connection.createStatement();
-		String query = "create table user(ID int, Name varchar(255), taccesstoken varchar(255), taccesstokensecret varchar(255))";
+		String query = "create table users"
+				+ "(user_id serial PRIMARY KEY, "
+				+ "name VARCHAR (50) UNIQUE NOT NULL, "
+				+ "taccesstoken VARCHAR (255) UNIQUE NOT NULL, "
+				+ "taccesstokensecret VARCHAR (255) UNIQUE NOT NULL)";
 		statement.executeQuery(query);
 		
 		statusListener = new StatusListener() {
