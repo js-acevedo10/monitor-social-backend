@@ -45,6 +45,10 @@ public class Main {
     		e.printStackTrace();
     	}
     	TwitterStreamer twitterStreamer = new TwitterStreamer(keywords, languages, locations, true);
-        twitterStreamer.startStreaming();
+        try {
+        	twitterStreamer.startStreaming();
+        } catch(Exception e) {
+        	e.printStackTrace();
+        }
 	}
 }
