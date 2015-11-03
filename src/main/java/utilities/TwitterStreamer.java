@@ -64,6 +64,7 @@ public class TwitterStreamer {
 			accessSecret = rs.getString(4);
 			nombre = rs.getString(2);
 		}
+		final String non = nombre;
 		lastUserInteraction += " en el perfil de " + nombre + "</h1>";
 		
 		statusListener = new StatusListener() {
@@ -88,7 +89,10 @@ public class TwitterStreamer {
 			
 			public void onTrackLimitationNotice(int numberOfLimitedStatuses) {}
 			
-			public void onStatus(Status status) {}
+			public void onStatus(Status status) {
+				statusCounter++;
+				lastUserInteraction = "<h1>Nueva entrada en el muro de " + non + "</h1><h2>" + status.getUser().getName() + " escribio:</h2><p>" + status.getText() + "</p>";
+			}
 			
 			public void onStallWarning(StallWarning warning) {}
 			
