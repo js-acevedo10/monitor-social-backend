@@ -16,14 +16,19 @@ public class RestResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTwitterMessages() throws JSONException {
+	public Response getTwitterMessages() {
 		
 		String entrada = TwitterStreamer.getLastUserInteraction();
 		entrada.replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u").replace(":", "=");
 		
 		String x = "{evento:Nuevo, texto:\"" + entrada + "\"}";
 		
-		JSONObject respuesta = new JSONObject(x);
+		JSONObject respuesta;
+		try {
+			respuesta = new JSONObject(x);
+		} catch (JSONException e) {
+			respuesta = new JSONObject();
+		}
 
 		return Response.status(200).entity(respuesta).build();
 	}
