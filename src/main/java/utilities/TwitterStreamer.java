@@ -46,7 +46,7 @@ public class TwitterStreamer {
 		this.saveSome = saveSome;
 		saved = new ArrayList<Status>();
 		statusCounter = 0;
-		lastUserInteraction = "<h1>No ha ocurrido nada nuevo";
+		lastUserInteraction = "No ha ocurrido nada nuevo";
 	}
 	
 	public void startStreaming() throws Exception {
@@ -65,7 +65,7 @@ public class TwitterStreamer {
 			nombre = rs.getString(2);
 		}
 		final String non = nombre;
-		lastUserInteraction += " en el perfil de " + nombre + "</h1>";
+		lastUserInteraction += " en el perfil de " + nombre;
 		
 		statusListener = new StatusListener() {
 			public void onException(Exception e) {
@@ -91,7 +91,7 @@ public class TwitterStreamer {
 			
 			public void onStatus(Status status) {
 				statusCounter++;
-				lastUserInteraction = "<h1>Nueva entrada en el muro de " + non + "</h1><h2>" + status.getUser().getName() + " escribio:</h2><p>" + status.getText() + "</p>";
+				lastUserInteraction = "Nueva entrada en el muro de " + non + ": " + status.getUser().getName() + " escribio: " + status.getText();
 			}
 			
 			public void onStallWarning(StallWarning warning) {}
@@ -139,7 +139,7 @@ public class TwitterStreamer {
 			
 			public void onFollow(User source, User followedUser) {
 				System.out.println(source.getScreenName() + " ---- " + followedUser.getName());
-				lastUserInteraction = "<h2>" + source.getName() + "(@" + source.getScreenName() + ")" + " ha comenzado a seguir a " + followedUser.getName() + "(@" + followedUser.getScreenName() + ")" + "</h2>";
+				lastUserInteraction = source.getName() + "(@" + source.getScreenName() + ")" + " ha comenzado a seguir a " + followedUser.getName() + "(@" + followedUser.getScreenName() + ")";
 			}
 			
 			public void onFavoritedRetweet(User source, User target,
