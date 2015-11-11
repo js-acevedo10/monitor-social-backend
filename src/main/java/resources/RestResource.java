@@ -1,35 +1,46 @@
 package resources;
 
-import java.util.ArrayList;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import twitter4j.Status;
-import utilities.TwitterJSONParser;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import utilities.TwitterStreamer;
 
 @Path("/mensajes")
 public class RestResource {
 	
 	@GET
-	@Produces(MediaType.TEXT_HTML)
-	public String getTwitterMessages() {
-//		ArrayList<Status> twitList = TwitterStreamer.getLastTweets();
-//		String respuesta = "";
-//		for(Status stauts : twitList) {
-//			respuesta += TwitterJSONParser.parseTwitt(stauts);
-//		}
-//		if(respuesta.equalsIgnoreCase("")) {
-//			respuesta = "0 tweets.";
-//		}
-//		return respuesta;
-		String respuesta = TwitterStreamer.getLastUserInteraction();
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getTwitterMessages() throws JSONException {
 		
-		respuesta = "<h1>Esto es lo &uacute;ltimo que ha sucedido en el perfil seleccionado: (" + TwitterStreamer.getCount() +")</h1>" + respuesta;
+		JSONObject entrada = TwitterStreamer.getLastUserInteraction();
 		
-		return respuesta;
+		String evento = entrada.getString("evento");
+		JSONObject respuesta = null;
+		
+		switch (evento) {
+		case "onStatus":
+			respuesta = new JSONObject()
+			.append("tipo", evento)
+			.append("text", entrada.getString("text"));
+			JSONObject usuario = entrada.getJSONObject("user");
+			respuesta.append("user-id", usuario.getString("id"));
+			respuesta.append("name", usuario.getString("name"));
+			break;
+		case "follow":
+			respuesta = new JSONObject()
+			.append("tipo", evento)
+			.append("text", "El usuario " + entrada.getString("source") + " ha comenzado a seguir a " + entrada.getString("followedUser"));
+			break;
+		default:
+			break;
+		}
+		
+		return Response.status(200).entity(respuesta).build();
 	}
 }

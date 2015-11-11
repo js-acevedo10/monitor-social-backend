@@ -9,6 +9,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 import twitter4j.DirectMessage;
 import twitter4j.FilterQuery;
 import twitter4j.StallWarning;
@@ -37,7 +40,7 @@ public class TwitterStreamer {
 	public static ArrayList<Status> saved;
 	public static Status lastStatus;
 	public static int statusCounter;
-	public static String lastUserInteraction;
+	public static JSONObject lastUserInteraction;
 	
 	public TwitterStreamer(String[] keywords, String[] languages, double[][] locations, boolean saveSome) {
 		this.keywords = keywords;
@@ -46,7 +49,7 @@ public class TwitterStreamer {
 		this.saveSome = saveSome;
 		saved = new ArrayList<Status>();
 		statusCounter = 0;
-		lastUserInteraction = "<h1>No ha ocurrido nada nuevo";
+		lastUserInteraction = null;
 	}
 	
 	public void startStreaming() throws Exception {
@@ -65,7 +68,6 @@ public class TwitterStreamer {
 			nombre = rs.getString(2);
 		}
 		final String non = nombre;
-		lastUserInteraction += " en el perfil de " + nombre + "</h1>";
 		
 		statusListener = new StatusListener() {
 			public void onException(Exception e) {
@@ -91,7 +93,13 @@ public class TwitterStreamer {
 			
 			public void onStatus(Status status) {
 				statusCounter++;
-				lastUserInteraction = "<h1>Nueva entrada en el muro de " + non + "</h1><h2>" + status.getUser().getName() + " escribio:</h2><p>" + status.getText() + "</p>";
+				try {
+					lastUserInteraction = new JSONObject()
+					.append("evento", "onStatus")
+					.append("data", status);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
 			
 			public void onStallWarning(StallWarning warning) {}
@@ -139,7 +147,14 @@ public class TwitterStreamer {
 			
 			public void onFollow(User source, User followedUser) {
 				System.out.println(source.getScreenName() + " ---- " + followedUser.getName());
-				lastUserInteraction = "<h2>" + source.getName() + "(@" + source.getScreenName() + ")" + " ha comenzado a seguir a " + followedUser.getName() + "(@" + followedUser.getScreenName() + ")" + "</h2>";
+				try {
+					lastUserInteraction = new JSONObject()
+						.append("evento", "follow")
+						.append("source", source)
+						.append("followedUser", followedUser);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
 			
 			public void onFavoritedRetweet(User source, User target,
@@ -195,7 +210,7 @@ public class TwitterStreamer {
 		return lastStatus;
 	}
 	
-	public static String getLastUserInteraction() {
+	public static JSONObject getLastUserInteraction() {
 		return lastUserInteraction;
 	}
 	
