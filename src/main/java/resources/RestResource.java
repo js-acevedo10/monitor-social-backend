@@ -20,9 +20,9 @@ public class RestResource {
 		
 		String entrada = TwitterStreamer.getLastUserInteraction();
 		
-		JSONObject respuesta = new JSONObject()
-			.append("evento", "Nuevo")
-			.append("texto", entrada);
+		String x = "{evento:'Nuevo', texto" + entrada + "}";
+		
+		JSONObject respuesta = new JSONObject(x);
 
 		return Response.status(200).entity(respuesta).build();
 	}
