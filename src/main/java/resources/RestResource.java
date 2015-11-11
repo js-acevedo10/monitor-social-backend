@@ -4,7 +4,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -16,7 +15,7 @@ public class RestResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject getTwitterMessages() throws JSONException {
+	public String getTwitterMessages() throws JSONException {
 		
 		JSONObject entrada = TwitterStreamer.getLastUserInteraction();
 		
@@ -37,7 +36,7 @@ public class RestResource {
 			.append("tipo", evento)
 			.append("text", "El usuario " + entrada.getString("source") + " ha comenzado a seguir a " + entrada.getString("followedUser"));
 		}
-		
-		return respuesta;
+		System.out.println(respuesta.toString());
+		return respuesta.toString();
 	}
 }
