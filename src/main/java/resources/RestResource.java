@@ -23,22 +23,19 @@ public class RestResource {
 		String evento = entrada.getString("evento");
 		JSONObject respuesta = null;
 		
-		switch (evento) {
-		case "onStatus":
+
+		if(evento.equalsIgnoreCase("onStatus")) {
 			respuesta = new JSONObject()
 			.append("tipo", evento)
 			.append("text", entrada.getString("text"));
 			JSONObject usuario = entrada.getJSONObject("user");
 			respuesta.append("user-id", usuario.getString("id"));
 			respuesta.append("name", usuario.getString("name"));
-			break;
-		case "follow":
+		}
+		else if(evento.equalsIgnoreCase("follow")) {
 			respuesta = new JSONObject()
 			.append("tipo", evento)
 			.append("text", "El usuario " + entrada.getString("source") + " ha comenzado a seguir a " + entrada.getString("followedUser"));
-			break;
-		default:
-			break;
 		}
 		
 		return Response.status(200).entity(respuesta).build();
