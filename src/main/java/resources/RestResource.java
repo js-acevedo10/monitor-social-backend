@@ -21,7 +21,7 @@ public class RestResource {
 		String entrada = TwitterStreamer.getLastUserInteraction();
 		entrada.replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u");
 		
-		String x = "{evento:'Nuevo', texto:'" + entrada + "'}";
+		String x = "{evento:Nuevo, texto:" + entrada + "}";
 		
 		JSONObject respuesta = new JSONObject(x);
 
