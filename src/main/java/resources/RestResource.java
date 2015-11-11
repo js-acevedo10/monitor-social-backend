@@ -19,9 +19,9 @@ public class RestResource {
 	public Response getTwitterMessages() throws JSONException {
 		
 		String entrada = TwitterStreamer.getLastUserInteraction();
-		entrada.replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u");
+		entrada.replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u").replace(":", "=");
 		
-		String x = "{evento:Nuevo, texto:" + entrada + "}";
+		String x = "{evento:Nuevo, texto:\"" + entrada + "\"}";
 		
 		JSONObject respuesta = new JSONObject(x);
 
