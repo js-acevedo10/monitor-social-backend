@@ -16,7 +16,7 @@ public class RestResource {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTwitterMessages() throws JSONException {
+	public JSONObject getTwitterMessages() throws JSONException {
 		
 		JSONObject entrada = TwitterStreamer.getLastUserInteraction();
 		
@@ -38,6 +38,6 @@ public class RestResource {
 			.append("text", "El usuario " + entrada.getString("source") + " ha comenzado a seguir a " + entrada.getString("followedUser"));
 		}
 		
-		return Response.status(200).entity(respuesta).build();
+		return respuesta;
 	}
 }
