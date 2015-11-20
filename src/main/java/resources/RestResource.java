@@ -32,6 +32,7 @@ public class RestResource {
 
 		return Response.ok()
 				.entity(respuesta)
+				.header("Access-Control-Allow-Headers", "Content-Type")
 				.header("Access-Controll-Allow-Origin", "*")
 				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
 				.build();
