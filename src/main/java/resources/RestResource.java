@@ -30,6 +30,10 @@ public class RestResource {
 			respuesta = new JSONObject();
 		}
 
-		return Response.status(200).entity(respuesta).build();
+		return Response.ok()
+				.entity(respuesta)
+				.header("Access-Controll-Allow-Origin", "*")
+				.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT")
+				.build();
 	}
 }
